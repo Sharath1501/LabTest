@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic User Registration Form</title>
+    <title>Event Registration Form</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -25,27 +26,43 @@
             background: white;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
-            animation: slideIn 0.5s ease-out;
+            animation: slideIn 0.6s ease-out;
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .event-header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
         h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
+            color: #e91e63;
             font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .event-date {
+            color: #777;
+            font-size: 14px;
         }
 
         .form-group {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         label {
@@ -57,30 +74,30 @@
 
         input[type="text"],
         input[type="email"],
-        input[type="password"] {
+        input[type="tel"] {
             width: 100%;
             padding: 15px;
             border: 2px solid #ddd;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 16px;
             transition: all 0.3s ease;
         }
 
         input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #ff6b9d;
+            box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.1);
             transform: translateY(-2px);
         }
 
         .error {
             border-color: #e74c3c !important;
-            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1) !important;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1) !important;
         }
 
         .success {
             border-color: #27ae60 !important;
-            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1) !important;
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1) !important;
         }
 
         .message {
@@ -88,9 +105,9 @@
             top: 100%;
             left: 0;
             right: 0;
-            font-size: 12px;
+            font-size: 13px;
             padding: 5px 0;
-            min-height: 20px;
+            min-height: 22px;
         }
 
         .error-message {
@@ -101,36 +118,32 @@
             color: #27ae60;
         }
 
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #666;
-            font-size: 18px;
-        }
-
         .checkbox-group {
             display: flex;
-            align-items: center;
-            margin-bottom: 20px;
+            align-items: flex-start;
+            margin-bottom: 25px;
             cursor: pointer;
         }
 
         .checkbox-group input[type="checkbox"] {
             width: auto;
-            margin-right: 10px;
-            transform: scale(1.2);
+            margin-right: 12px;
+            margin-top: 2px;
+            transform: scale(1.3);
+        }
+
+        .checkbox-label {
+            line-height: 1.4;
+            color: #555;
         }
 
         button {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #e91e63 100%);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
@@ -139,8 +152,8 @@
         }
 
         button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(255, 107, 157, 0.4);
         }
 
         button:disabled {
@@ -154,188 +167,248 @@
 
         .success-alert {
             display: none;
-            background: #27ae60;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 18px;
+            border-radius: 12px;
             text-align: center;
             margin-top: 20px;
-            animation: fadeIn 0.3s ease;
+            font-weight: 500;
+            animation: bounceIn 0.4s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .registrations-list {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .reg-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reg-count {
+            text-align: center;
+            color: #e91e63;
+            font-weight: bold;
+            margin-top: 10px;
         }
 
         @media (max-width: 480px) {
             .container {
-                padding: 30px 20px;
+                padding: 30px 25px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h2>Create Your Account</h2>
+        <div class="event-header">
+            <h2>User Registration Form </h2>
+            <div class="event-date">December 2025 </div>
+        </div>
         <form id="regForm">
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" required>
-                <div class="message" id="usernameMsg"></div>
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="John Doe" required>
+                <div class="message" id="nameMsg"></div>
             </div>
 
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" placeholder="john@example.com" required>
                 <div class="message" id="emailMsg"></div>
             </div>
 
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" required>
-                <span class="password-toggle" id="togglePassword">👁️</span>
-                <div class="message" id="passwordMsg"></div>
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="+1 (123) 456-7890" required>
+                <div class="message" id="phoneMsg"></div>
             </div>
 
             <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" required>
-                <span class="password-toggle" id="toggleConfirm">👁️</span>
-                <div class="message" id="confirmMsg"></div>
+                <label for="department">Department</label>
+                <input type="text" id="department" placeholder="Engineering" required>
+                <div class="message" id="deptMsg"></div>
             </div>
 
             <div class="checkbox-group">
-                <input type="checkbox" id="newsletter" required>
-                <label for="newsletter">I agree to the terms and receive newsletter</label>
+                <input type="checkbox" id="terms" required>
+                <label for="terms" class="checkbox-label">
+                    I agree to the terms & conditions and confirm my attendance.
+                </label>
             </div>
 
-            <button type="submit" id="submitBtn" disabled>Register</button>
+            <button type="submit" id="submitBtn" disabled>Register for Event</button>
 
             <div class="success-alert" id="successAlert">
-                Registration successful! Welcome aboard! 🎉
+                🎉 Registration successful! Check your email for confirmation.
             </div>
         </form>
+
+        <div id="registrationsList" class="registrations-list" style="display: none;">
+            <h3 style="text-align: center; color: #333; margin-bottom: 15px;">Recent Registrations</h3>
+            <div id="regItems"></div>
+            <div id="regCount" class="reg-count"></div>
+        </div>
     </div>
 
     <script>
         const form = document.getElementById('regForm');
         const submitBtn = document.getElementById('submitBtn');
         const successAlert = document.getElementById('successAlert');
+        const registrationsList = document.getElementById('registrationsList');
+        const regItems = document.getElementById('regItems');
+        const regCount = document.getElementById('regCount');
+
+        let registrations = JSON.parse(localStorage.getItem('eventRegs')) || [];
+
+        // Render registrations
+        function renderRegistrations() {
+            regItems.innerHTML = '';
+            registrations.slice(-5).reverse().forEach((reg, index) => {
+                const item = document.createElement('div');
+                item.className = 'reg-item';
+                item.innerHTML = `
+                    <span>${reg.name} (${reg.department}) - ${reg.email}</span>
+                    <small>${reg.phone}</small>
+                `;
+                regItems.appendChild(item);
+            });
+            regCount.textContent = `Total Registrations: ${registrations.length}`;
+            registrationsList.style.display = registrations.length > 0 ? 'block' : 'none';
+        }
+        renderRegistrations();
 
         // Elements
-        const username = document.getElementById('username');
+        const nameInput = document.getElementById('name');
         const email = document.getElementById('email');
-        const password = document.getElementById('password');
-        const confirmPassword = document.getElementById('confirmPassword');
-        const newsletter = document.getElementById('newsletter');
+        const phone = document.getElementById('phone');
+        const department = document.getElementById('department');
+        const terms = document.getElementById('terms');
 
         // Messages
-        const usernameMsg = document.getElementById('usernameMsg');
+        const nameMsg = document.getElementById('nameMsg');
         const emailMsg = document.getElementById('emailMsg');
-        const passwordMsg = document.getElementById('passwordMsg');
-        const confirmMsg = document.getElementById('confirmMsg');
-
-        // Toggle password visibility
-        document.getElementById('togglePassword').addEventListener('click', () => {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-        });
-
-        document.getElementById('toggleConfirm').addEventListener('click', () => {
-            const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
-            confirmPassword.setAttribute('type', type);
-        });
+        const phoneMsg = document.getElementById('phoneMsg');
+        const deptMsg = document.getElementById('deptMsg');
 
         // Validation functions
-        function validateUsername(val) {
-            const msg = val.length >= 3 && /^[a-zA-Z0-9]+$/.test(val) ? 'Valid username' : 'Min 3 chars, alphanumeric only';
-            usernameMsg.textContent = msg;
-            usernameMsg.className = 'message ' + (val.length >= 3 && /^[a-zA-Z0-9]+$/.test(val) ? 'success-message' : 'error-message');
-            return val.length >= 3 && /^[a-zA-Z0-9]+$/.test(val);
+        function validateName(val) {
+            const nameRegex = /^[a-zA-Z\s]{2,}$/;
+            const msg = nameRegex.test(val) ? 'Name looks good!' : 'Full name (2+ letters/spaces)';
+            nameMsg.textContent = msg;
+            nameMsg.className = 'message ' + (nameRegex.test(val) ? 'success-message' : 'error-message');
+            return nameRegex.test(val);
         }
 
         function validateEmail(val) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const msg = emailRegex.test(val) ? 'Valid email' : 'Enter a valid email';
+            const msg = emailRegex.test(val) ? 'Valid email address' : 'Enter valid email';
             emailMsg.textContent = msg;
             emailMsg.className = 'message ' + (emailRegex.test(val) ? 'success-message' : 'error-message');
             return emailRegex.test(val);
         }
 
-        function validatePassword(val) {
-            const hasLength = val.length >= 8;
-            const hasUpper = /[A-Z]/.test(val);
-            const hasLower = /[a-z]/.test(val);
-            const hasNumber = /\d/.test(val);
-            const valid = hasLength && hasUpper && hasLower && hasNumber;
-            const msg = valid ? 'Strong password' : `Password must be 8+ chars with uppercase, lowercase, and number`;
-            passwordMsg.textContent = msg;
-            passwordMsg.className = 'message ' + (valid ? 'success-message' : 'error-message');
+        function validatePhone(val) {
+            const phoneRegex = /^[\+]?[1-9][\d\s\-\(\)]{9,15}$/;
+            const msg = phoneRegex.test(val) ? 'Valid phone number' : '10+ digits (with +/spaces/- ok)';
+            phoneMsg.textContent = msg;
+            phoneMsg.className = 'message ' + (phoneRegex.test(val) ? 'success-message' : 'error-message');
+            return phoneRegex.test(val);
+        }
+
+        function validateDepartment(val) {
+            const valid = val.trim().length > 0;
+            const msg = valid ? 'Looks good!' : 'Department is required';
+            deptMsg.textContent = msg;
+            deptMsg.className = 'message ' + (valid ? 'success-message' : 'error-message');
             return valid;
         }
 
-        function validateConfirm(val) {
-            const match = val === password.value;
-            confirmMsg.textContent = match ? 'Passwords match' : 'Passwords do not match';
-            confirmMsg.className = 'message ' + (match ? 'success-message' : 'error-message');
-            return match;
-        }
-
-        // Real-time validation
-        username.addEventListener('input', () => {
-            const valid = validateUsername(username.value);
-            username.className = valid ? 'success' : 'error';
-            checkFormValidity();
+        // Real-time listeners
+        nameInput.addEventListener('input', () => {
+            const valid = validateName(nameInput.value);
+            nameInput.className = valid ? 'success' : 'error';
+            checkValidity();
         });
 
         email.addEventListener('input', () => {
             const valid = validateEmail(email.value);
             email.className = valid ? 'success' : 'error';
-            checkFormValidity();
+            checkValidity();
         });
 
-        password.addEventListener('input', () => {
-            validatePassword(password.value);
-            password.className = validatePassword(password.value) ? 'success' : 'error';
-            if (confirmPassword.value) validateConfirm(confirmPassword.value);
-            checkFormValidity();
+        phone.addEventListener('input', () => {
+            const valid = validatePhone(phone.value);
+            phone.className = valid ? 'success' : 'error';
+            checkValidity();
         });
 
-        confirmPassword.addEventListener('input', () => {
-            const valid = validateConfirm(confirmPassword.value);
-            confirmPassword.className = valid ? 'success' : 'error';
-            checkFormValidity();
+        department.addEventListener('input', () => {
+            const valid = validateDepartment(department.value);
+            department.className = valid ? 'success' : 'error';
+            checkValidity();
         });
 
-        newsletter.addEventListener('change', checkFormValidity);
+        terms.addEventListener('change', checkValidity);
 
-        function checkFormValidity() {
-            const isValid = validateUsername(username.value) &&
-                            validateEmail(email.value) &&
-                            validatePassword(password.value) &&
-                            validateConfirm(confirmPassword.value) &&
-                            newsletter.checked;
-            submitBtn.disabled = !isValid;
+        function checkValidity() {
+            const valid = validateName(nameInput.value) &&
+                validateEmail(email.value) &&
+                validatePhone(phone.value) &&
+                validateDepartment(department.value) &&
+                terms.checked;
+            submitBtn.disabled = !valid;
         }
 
-        // Form submission
+        // Submit
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            // Mock API call or localStorage save
-            console.log('Form submitted:', {
-                username: username.value,
-                email: email.value
-            });
-            // Hide errors, show success
-            document.querySelectorAll('.error, .error-message').forEach(el => el.classList.remove('error', 'error-message'));
-            successAlert.style.display = 'block';
+            const newReg = {
+                name: nameInput.value,
+                email: email.value,
+                phone: phone.value,
+                department: department.value,
+                timestamp: new Date().toLocaleString()
+            };
+            registrations.push(newReg);
+            localStorage.setItem('eventRegs', JSON.stringify(registrations));
+            renderRegistrations();
+
+            // Reset and show success
             form.reset();
+            document.querySelectorAll('input').forEach(input => input.classList.remove('success', 'error'));
+            document.querySelectorAll('.message').forEach(msg => msg.textContent = '');
+            successAlert.style.display = 'block';
             submitBtn.disabled = true;
-            setTimeout(() => {
-                successAlert.style.display = 'none';
-            }, 3000);
+            setTimeout(() => successAlert.style.display = 'none', 4000);
         });
     </script>
 </body>
+
 </html>
