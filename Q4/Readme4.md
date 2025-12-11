@@ -24,17 +24,17 @@ student-portal/
 ### 1. `app.py`
 This is the main Flask application entry point. We have enhanced it to serve a proper HTML template.
 
-Path: `app.py`
+File: [`app.py`](./app.py)
 
 ### 2. `templates/index.html`
 Create a folder named `templates` and add `index.html`. This file contains the enhanced UI with modern styling.
 
-Path: `templates/index.html`
+File: [`templates/index.html`](./templates/index.html)
 
 ### 3. `requirements.txt`
 Specify the dependencies.
 
-Path: `requirements.txt`
+File: [`requirements.txt`](./requirements.txt)
 
 ---
 
@@ -43,7 +43,7 @@ Path: `requirements.txt`
 ### `Dockerfile`
 Create a `Dockerfile` in the root directory to define the image.
 
-Path: `Dockerfile`
+File: [`Dockerfile`](./Dockerfile)
 
 ---
 
