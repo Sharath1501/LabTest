@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic User Registration Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 28px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .error {
+            border-color: #e74c3c !important;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1) !important;
+        }
+
+        .success {
+            border-color: #27ae60 !important;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1) !important;
+        }
+
+        .message {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            font-size: 12px;
+            padding: 5px 0;
+            min-height: 20px;
+        }
+
+        .error-message {
+            color: #e74c3c;
+        }
+
+        .success-message {
+            color: #27ae60;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:not(:disabled) {
+            opacity: 1;
+        }
+
+        .success-alert {
+            display: none;
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create Your Account</h2>
+        <form id="regForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required>
+                <div class="message" id="usernameMsg"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+                <div class="message" id="emailMsg"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+                <span class="password-toggle" id="togglePassword">👁️</span>
+                <div class="message" id="passwordMsg"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" required>
+                <span class="password-toggle" id="toggleConfirm">👁️</span>
+                <div class="message" id="confirmMsg"></div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="newsletter" required>
+                <label for="newsletter">I agree to the terms and receive newsletter</label>
+            </div>
+
+            <button type="submit" id="submitBtn" disabled>Register</button>
+
+            <div class="success-alert" id="successAlert">
+                Registration successful! Welcome aboard! 🎉
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('regForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successAlert = document.getElementById('successAlert');
+
+        // Elements
+        const username = document.getElementById('username');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const newsletter = document.getElementById('newsletter');
+
+        // Messages
+        const usernameMsg = document.getElementById('usernameMsg');
+        const emailMsg = document.getElementById('emailMsg');
+        const passwordMsg = document.getElementById('passwordMsg');
+        const confirmMsg = document.getElementById('confirmMsg');
+
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', () => {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+        });
+
+        document.getElementById('toggleConfirm').addEventListener('click', () => {
+            const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPassword.setAttribute('type', type);
+        });
+
+        // Validation functions
+        function validateUsername(val) {
+            const msg = val.length >= 3 && /^[a-zA-Z0-9]+$/.test(val) ? 'Valid username' : 'Min 3 chars, alphanumeric only';
+            usernameMsg.textContent = msg;
+            usernameMsg.className = 'message ' + (val.length >= 3 && /^[a-zA-Z0-9]+$/.test(val) ? 'success-message' : 'error-message');
+            return val.length >= 3 && /^[a-zA-Z0-9]+$/.test(val);
+        }
+
+        function validateEmail(val) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const msg = emailRegex.test(val) ? 'Valid email' : 'Enter a valid email';
+            emailMsg.textContent = msg;
+            emailMsg.className = 'message ' + (emailRegex.test(val) ? 'success-message' : 'error-message');
+            return emailRegex.test(val);
+        }
+
+        function validatePassword(val) {
+            const hasLength = val.length >= 8;
+            const hasUpper = /[A-Z]/.test(val);
+            const hasLower = /[a-z]/.test(val);
+            const hasNumber = /\d/.test(val);
+            const valid = hasLength && hasUpper && hasLower && hasNumber;
+            const msg = valid ? 'Strong password' : `Password must be 8+ chars with uppercase, lowercase, and number`;
+            passwordMsg.textContent = msg;
+            passwordMsg.className = 'message ' + (valid ? 'success-message' : 'error-message');
+            return valid;
+        }
+
+        function validateConfirm(val) {
+            const match = val === password.value;
+            confirmMsg.textContent = match ? 'Passwords match' : 'Passwords do not match';
+            confirmMsg.className = 'message ' + (match ? 'success-message' : 'error-message');
+            return match;
+        }
+
+        // Real-time validation
+        username.addEventListener('input', () => {
+            const valid = validateUsername(username.value);
+            username.className = valid ? 'success' : 'error';
+            checkFormValidity();
+        });
+
+        email.addEventListener('input', () => {
+            const valid = validateEmail(email.value);
+            email.className = valid ? 'success' : 'error';
+            checkFormValidity();
+        });
+
+        password.addEventListener('input', () => {
+            validatePassword(password.value);
+            password.className = validatePassword(password.value) ? 'success' : 'error';
+            if (confirmPassword.value) validateConfirm(confirmPassword.value);
+            checkFormValidity();
+        });
+
+        confirmPassword.addEventListener('input', () => {
+            const valid = validateConfirm(confirmPassword.value);
+            confirmPassword.className = valid ? 'success' : 'error';
+            checkFormValidity();
+        });
+
+        newsletter.addEventListener('change', checkFormValidity);
+
+        function checkFormValidity() {
+            const isValid = validateUsername(username.value) &&
+                            validateEmail(email.value) &&
+                            validatePassword(password.value) &&
+                            validateConfirm(confirmPassword.value) &&
+                            newsletter.checked;
+            submitBtn.disabled = !isValid;
+        }
+
+        // Form submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Mock API call or localStorage save
+            console.log('Form submitted:', {
+                username: username.value,
+                email: email.value
+            });
+            // Hide errors, show success
+            document.querySelectorAll('.error, .error-message').forEach(el => el.classList.remove('error', 'error-message'));
+            successAlert.style.display = 'block';
+            form.reset();
+            submitBtn.disabled = true;
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
